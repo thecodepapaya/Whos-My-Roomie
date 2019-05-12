@@ -14,6 +14,9 @@ class _FirstPageState extends State<FirstPage>
   final _userName = TextEditingController();
   final _password = TextEditingController();
 
+  bool _passwordMatch = true;
+  bool _usernameFound = true;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +33,8 @@ class _FirstPageState extends State<FirstPage>
   @override
   void dispose() {
     _controller.dispose();
+    _userName.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -70,7 +75,8 @@ class _FirstPageState extends State<FirstPage>
                     ),
                   ],
                 ),
-                signInAndButtonBuilder(),
+                signInBuilder(),
+                signUpBuilder(),
               ],
             ),
           ),
@@ -79,67 +85,126 @@ class _FirstPageState extends State<FirstPage>
     );
   }
 
-  Widget signInAndButtonBuilder() {
+  Widget signInBuilder() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+          padding: EdgeInsets.symmetric(
+            horizontal: 50,
+            vertical: 5,
+          ),
           child: TextFormField(
             controller: _userName,
             decoration: InputDecoration(
               labelText: "Username",
+              errorText: _usernameFound ? null : 'Username not found !',
             ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+          padding: EdgeInsets.symmetric(
+            horizontal: 50,
+            vertical: 5,
+          ),
           child: TextFormField(
             controller: _password,
             decoration: InputDecoration(
               labelText: "Password",
+              errorText: _passwordMatch
+                  ? null
+                  : 'Username and Password do not Match !',
             ),
           ),
         ),
         Padding(
-          child: buildFlatButtons("Sign In"),
-          padding: EdgeInsets.symmetric(vertical: 10),
-        ),
-        Text(
-          "\nDon't have an account?",
-          textAlign: TextAlign.center,
-        ),
-        Padding(
-          child: buildFlatButtons("Sign Up Now"),
+          child: SizedBox(
+            height: 35,
+            width: 200,
+            child: FlatButton(
+              child: Text(
+                "Sign In",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                var User = new SignIn(_userName.text, _password.text);
+                _passwordMatch = User.itsAMatch();
+              },
+              color: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
           padding: EdgeInsets.symmetric(vertical: 10),
         ),
       ],
     );
   }
 
-  SizedBox buildFlatButtons(String buttonText) {
-    return SizedBox(
-      height: 35,
-      width: 200,
-      child: FlatButton(
-        child: Text(
-          buttonText,
-          style: TextStyle(
-            color: Colors.white,
+  Widget signUpBuilder() {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Text(
+            "Don't have an account?",
+            textAlign: TextAlign.center,
           ),
         ),
-        onPressed: () {
-          if (buttonText == "Sign In") {
-            var User = new SignIn(_userName.text,_password.text);
-          } else {
-            Navigator.of(context).pushNamed('/SignUp');
-          }
-        },
-        color: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: SizedBox(
+            height: 35,
+            width: 200,
+            child: FlatButton(
+              child: Text(
+                "Sign Up Now!",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed('/SignUp');
+              },
+              color: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
+
+  // SizedBox buildFlatButtons(String buttonText) {
+  //   return SizedBox(
+  //     height: 35,
+  //     width: 200,
+  //     child: FlatButton(
+  //       child: Text(
+  //         buttonText,
+  //         style: TextStyle(
+  //           color: Colors.white,
+  //         ),
+  //       ),
+  //       onPressed: () {
+  //         if (buttonText == "Sign In") {
+  //           var User = new SignIn(_userName.text, _password.text);
+  //           _passwordMatch = User.itsAMatch();
+  //           return;
+  //         } else {
+  //           Navigator.of(context).pushNamed('/SignUp');
+  //         }
+  //       },
+  //       color: Colors.blue,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

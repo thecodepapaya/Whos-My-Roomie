@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1018413631162",
+    "firebase_url": "https://who-s-my-roomie.firebaseio.com",
+    "project_id": "who-s-my-roomie",
+    "storage_bucket": "who-s-my-roomie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018413631162:android:aa7d87511bce5aaa",
+        "android_client_info": {
+          "package_name": "com.example.whos_my_roomie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018413631162-6q4ulodu6m4dtjksaet0o5gp83f7t8vj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjwUuq6R0IWbUpSf2i0j0LnyGwF88p1dE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018413631162-6q4ulodu6m4dtjksaet0o5gp83f7t8vj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,14 +1,28 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignIn {
-  String _userName, _password;
+  String username, password;
+
+  var signInSearch =
+      Firestore.instance.collection("LoginData").document("ashu");
+
   SignIn(String enteredUsername, String enteredPassword) {
-    this._userName = enteredUsername;
-    this._password = enteredPassword;
+    this.username = enteredUsername;
+    this.password = enteredPassword;
   }
 
-  bool itsAMatch(){
-
+  bool usernameExists() {
+    return signInSearch.get() != null;
   }
 
+  bool itsAMatch() {
+    if (usernameExists()) {
+      signInSearch.get().then((_){
+        print(_);
+        print(_.data['username']);
+      });
+      
+    }
+    return false;
+  }
 }
