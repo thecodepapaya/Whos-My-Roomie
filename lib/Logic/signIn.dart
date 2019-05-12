@@ -18,19 +18,30 @@ class SignIn {
   //   return false;
   // }
 
-  bool itsAMatch() {
-    var num = 1;
-    signInSearch.get().then((documentInstance) {
-      if (documentInstance.data['password'] == password) {
-        print("Username and Password Match");
-        num = 1;
-        return true;
-      } else {
-        print("Username and Password DO NOT Match");
-        num = 0;
-        return false;
+  bool itsAMatch(){
+    signInSearch.get().then((documentInstance){
+      if(documentInstance.exists){
+        if(documentInstance.data['password'] == password){
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
     });
-    return (num == 1) ? true : false;
+    return false;
   }
+
+  // bool itsAMatch() {
+  //   signInSearch.get().then((documentInstance) {
+  //     if (documentInstance.exists) {
+  //       print("Username and Password Match");
+  //       return true;
+  //     } else {
+  //       print("Username and Password DO NOT Match");
+  //       return false;
+  //     }
+  //   });
+  // }
 }

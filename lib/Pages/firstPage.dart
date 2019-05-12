@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whos_my_roomie/Logic/signIn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whos_my_roomie/Pages/fillForm.dart';
 
 class FirstPage extends StatefulWidget {
   @override
@@ -14,8 +16,12 @@ class _FirstPageState extends State<FirstPage>
   final _userName = TextEditingController();
   final _password = TextEditingController();
 
+  String storedUsername, storedPassword;
+
   bool _passwordMatch = true;
   bool _usernameFound = true;
+
+  var signInSearch;
 
   @override
   void initState() {
@@ -28,6 +34,8 @@ class _FirstPageState extends State<FirstPage>
       debugLabel: "Animation controller for fading the confused roomie icon",
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _controller.forward();
+    signInSearch = Firestore.instance.collection("LoginData");
   }
 
   @override
@@ -40,48 +48,52 @@ class _FirstPageState extends State<FirstPage>
 
   @override
   Widget build(BuildContext context) {
-    _controller.forward();
-    return Scaffold(
-      body: Center(
-        child: FadeTransition(
-          opacity: _animation,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+    return StreamBuilder<QuerySnapshot>(
+      stream: signInSearch.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        return Scaffold(
+          body: Center(
+            child: FadeTransition(
+              opacity: _animation,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    FadeTransition(
-                      opacity: _animation,
-                      child: Image.asset(
-                        "assets/icon-full.png",
-                        scale: 2,
-                      ),
-                    ),
-                    FadeTransition(
-                      opacity: _animation,
-                      child: Padding(
-                        child: Text(
-                          "Who's My Roomie?",
-                          textScaleFactor: 2,
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.w700,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        FadeTransition(
+                          opacity: _animation,
+                          child: Image.asset(
+                            "assets/icon-full.png",
+                            scale: 2,
                           ),
                         ),
-                        padding: EdgeInsets.only(top: 20, bottom: 20),
-                      ),
+                        FadeTransition(
+                          opacity: _animation,
+                          child: Padding(
+                            child: Text(
+                              "Who's My Roomie?",
+                              textScaleFactor: 2,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                          ),
+                        ),
+                      ],
                     ),
+                    signInBuilder(),
+                    signUpBuilder(),
                   ],
                 ),
-                signInBuilder(),
-                signUpBuilder(),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -129,10 +141,57 @@ class _FirstPageState extends State<FirstPage>
                 ),
               ),
               onPressed: () {
-                var user = new SignIn(_userName.text, _password.text);
-                _passwordMatch = user.itsAMatch();
-                print("Password Match in First Page: $_passwordMatch");
+                signInSearch
+                    .document(_userName.text)
+                    .get()
+                    .then((documentInstance) {
+                  if (!documentInstance.exists) {
+                    setState(() {
+                      _usernameFound = false;
+                    });
+                  } else {
+                    _usernameFound = true;
+                    storedPassword = documentInstance.data["password"];
+                    if (_signIn(storedPassword, _password.text)) {
+                      _passwordMatch = true;
+                      Navigator.pushReplacementNamed(context, '/FillForm');
+                    } else {
+                      setState(() {
+                        _passwordMatch = false;
+                      });
+                    }
+                  }
+                });
               },
+
+              //   if (!documentInstance.exists) {
+              //         _usernameFound = false;
+              //     } else {
+              //       storedPassword = documentInstance.data["password"];
+              //       if (_signIn(storedPassword, _password.text)) {
+              //         Navigator.pushReplacementNamed(context, '/FillForm');
+              //       } else {
+              //         setState(() {
+              //           _passwordMatch = false;
+              //         });
+              //       }
+              //     }
+              //   }
+              // });
+
+              // signInSearch
+              //     .document(_userName.text)
+              //     .get()
+              //     .then((documentInstance) {
+              //   storedPassword = documentInstance.data["password"];
+              //   if (_signIn(storedPassword, _password.text)) {
+              //     Navigator.pushReplacementNamed(context, '/FillForm');
+              //   } else {
+              //     setState(() {
+              //       _passwordMatch = false;
+              //     });
+              //   }
+              // });
               color: Colors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -181,31 +240,13 @@ class _FirstPageState extends State<FirstPage>
     );
   }
 
-  // SizedBox buildFlatButtons(String buttonText) {
-  //   return SizedBox(
-  //     height: 35,
-  //     width: 200,
-  //     child: FlatButton(
-  //       child: Text(
-  //         buttonText,
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //         ),
-  //       ),
-  //       onPressed: () {
-  //         if (buttonText == "Sign In") {
-  //           var User = new SignIn(_userName.text, _password.text);
-  //           _passwordMatch = User.itsAMatch();
-  //           return;
-  //         } else {
-  //           Navigator.of(context).pushNamed('/SignUp');
-  //         }
-  //       },
-  //       color: Colors.blue,
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(20),
-  //       ),
-  //     ),
-  //   );
-  // }
+  bool _signIn(String storedPassword, String password) {
+    if (storedPassword == password) {
+      print("Logged IN");
+      return true;
+    } else {
+      print("Not Logged in");
+      return false;
+    }
+  }
 }
