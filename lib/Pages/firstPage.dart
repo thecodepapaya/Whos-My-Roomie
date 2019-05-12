@@ -129,8 +129,9 @@ class _FirstPageState extends State<FirstPage>
                 ),
               ),
               onPressed: () {
-                var User = new SignIn(_userName.text, _password.text);
-                _passwordMatch = User.itsAMatch();
+                var user = new SignIn(_userName.text, _password.text);
+                _passwordMatch = user.itsAMatch();
+                print("Password Match in First Page: $_passwordMatch");
               },
               color: Colors.blue,
               shape: RoundedRectangleBorder(
