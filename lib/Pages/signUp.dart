@@ -44,28 +44,6 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           ),
-          persistentFooterButtons: <Widget>[
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("Back"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.55,
-              child: _dotPageIndicator(1),
-            ),
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {},
-              child: Text("Next"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-          ],
         ),
 //############################################ NamePage ################################################################
         Scaffold(
@@ -89,34 +67,7 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           ),
-          persistentFooterButtons: <Widget>[
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pop(context);
-                _stackIndex--;
-              },
-              child: Text("Back"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.55,
-              child: _dotPageIndicator(2),
-            ),
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pushNamed(context, '/UsernamePage');
-                setState(() {
-                  _stackIndex++;
-                });
-              },
-              child: Text("Next"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-          ],
+          persistentFooterButtons: persistentFooterButtonsBuilder(1),
         ),
 //############################################ UsernamePage ############################################################
         Scaffold(
@@ -140,36 +91,7 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           ),
-          persistentFooterButtons: <Widget>[
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pop(context);
-                setState(() {
-                  _stackIndex--;
-                });
-              },
-              child: Text("Back"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.55,
-              child: _dotPageIndicator(3),
-            ),
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pushNamed(context, '/PasswordPage');
-                setState(() {
-                  _stackIndex++;
-                });
-              },
-              child: Text("Next"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-          ],
+          persistentFooterButtons: persistentFooterButtonsBuilder(2),
         ),
 //############################################ PasswordPage ############################################################
         Scaffold(
@@ -193,36 +115,7 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           ),
-          persistentFooterButtons: <Widget>[
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pop(context);
-                setState(() {
-                  _stackIndex--;
-                });
-              },
-              child: Text("Back"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.55,
-              child: _dotPageIndicator(4),
-            ),
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pushNamed(context, '/PasswordPage');
-                setState(() {
-                  _stackIndex++;
-                });
-              },
-              child: Text("Next"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-          ],
+          persistentFooterButtons: persistentFooterButtonsBuilder(3),
         ),
 //############################################ CollegeDetailsPage ############################################################
         Scaffold(
@@ -246,62 +139,65 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           ),
-          persistentFooterButtons: <Widget>[
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pop(context);
-                setState(() {
-                  _stackIndex--;
-                });
-              },
-              child: Text("Back"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.55,
-              child: _dotPageIndicator(5),
-            ),
-            MaterialButton(
-              textColor: Colors.white,
-              onPressed: () {
-                //Navigator.pushNamed(context, '/PasswordPage');
-                setState(() {
-                  _stackIndex++;
-                });
-              },
-              child: Text("Next"),
-              color: Colors.blueAccent,
-              elevation: 7,
-            ),
-          ],
+          persistentFooterButtons: persistentFooterButtonsBuilder(4),
         ),
       ],
     );
   }
-}
 
-Widget _dotPageIndicator(int _pageindex) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-      _dotCreater(_pageindex, 1),
-      _dotCreater(_pageindex, 2),
-      _dotCreater(_pageindex, 3),
-      _dotCreater(_pageindex, 4),
-      _dotCreater(_pageindex, 5),
-    ],
-  );
-}
+  List<Widget> persistentFooterButtonsBuilder(int _pageIndex) {
+    return [
+      MaterialButton(
+        textColor: Colors.white,
+        onPressed: () {
+          //Navigator.pop(context);
+          setState(() {
+            _stackIndex--;
+          });
+        },
+        child: Text("Back"),
+        color: Colors.blueAccent,
+        elevation: 7,
+      ),
+      SizedBox(
+        width: MediaQuery.of(context).size.width * 0.55,
+        child: _dotPageIndicator(_pageIndex),
+      ),
+      MaterialButton(
+        textColor: Colors.white,
+        onPressed: () {
+          //Navigator.pushNamed(context, '/PasswordPage');
+          setState(() {
+            _stackIndex++;
+          });
+        },
+        child: Text("Next"),
+        color: Colors.blueAccent,
+        elevation: 7,
+      ),
+    ];
+  }
 
-Widget _dotCreater(int _pageindex, int _dotNumber) {
-  return Padding(
-    padding: EdgeInsets.all(3),
-    child: CircleAvatar(
-      maxRadius: 5,
-      minRadius: 3,
-      backgroundColor: _pageindex == _dotNumber ? Colors.purple : Colors.blue,
-    ),
-  );
+  Widget _dotPageIndicator(int _pageIndex) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _dotCreater(_pageIndex, 1),
+        _dotCreater(_pageIndex, 2),
+        _dotCreater(_pageIndex, 3),
+        _dotCreater(_pageIndex, 4),
+      ],
+    );
+  }
+
+  Widget _dotCreater(int _pageIndex, int _dotNumber) {
+    return Padding(
+      padding: EdgeInsets.all(3),
+      child: CircleAvatar(
+        maxRadius: 5,
+        minRadius: 3,
+        backgroundColor: _pageIndex == _dotNumber ? Colors.purple : Colors.blue,
+      ),
+    );
+  }
 }
