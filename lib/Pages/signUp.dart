@@ -182,18 +182,25 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: null,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(50),
+              child: Text("Creating an account will only take a minute"),
+            ),
+            Padding(
+              padding: EdgeInsets.all(50),
+              child: MaterialButton(
+                color: Colors.blue,
+                child: Text("Get Started"),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/NamePage');
+                },
+              ),
+            ),
+          ],
+        ),
       ),
-      // floatingActionButton: MaterialButton(
-      //   onPressed: () {},
-      //   child: Text("Next"),
-      //   color: Colors.blueAccent,
-      //   elevation: 7,
-      // ),
-      //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: ,
-      // ),
       persistentFooterButtons: <Widget>[
         MaterialButton(
           textColor: Colors.white,
@@ -224,86 +231,62 @@ Widget _dotPageIndicator(int _pageindex) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      Padding(
-        padding: EdgeInsets.all(3),
-        child: CircleAvatar(
-          maxRadius: 5,
-          minRadius: 3,
-          backgroundColor: _pageindex == 1 ? Colors.purple : Colors.blue,
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(3),
-        child: CircleAvatar(
-          maxRadius: 5,
-          minRadius: 3,
-          backgroundColor: _pageindex == 2 ? Colors.purple : Colors.blue,
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(3),
-        child: CircleAvatar(
-          maxRadius: 5,
-          minRadius: 3,
-          backgroundColor: _pageindex == 3 ? Colors.purple : Colors.blue,
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(3),
-        child: CircleAvatar(
-          maxRadius: 5,
-          minRadius: 3,
-          backgroundColor: _pageindex == 4 ? Colors.purple : Colors.blue,
-        ),
-      ),
+      _dotCreater(_pageindex, 1),
+      _dotCreater(_pageindex, 2),
+      _dotCreater(_pageindex, 3),
+      _dotCreater(_pageindex, 4),
+      _dotCreater(_pageindex, 5),
+      // Padding(
+      //   padding: EdgeInsets.all(3),
+      //   child: CircleAvatar(
+      //     maxRadius: 5,
+      //     minRadius: 3,
+      //     backgroundColor: _pageindex == 1 ? Colors.purple : Colors.blue,
+      //   ),
+      // ),
+      // Padding(
+      //   padding: EdgeInsets.all(3),
+      //   child: CircleAvatar(
+      //     maxRadius: 5,
+      //     minRadius: 3,
+      //     backgroundColor: _pageindex == 2 ? Colors.purple : Colors.blue,
+      //   ),
+      // ),
+      // Padding(
+      //   padding: EdgeInsets.all(3),
+      //   child: CircleAvatar(
+      //     maxRadius: 5,
+      //     minRadius: 3,
+      //     backgroundColor: _pageindex == 3 ? Colors.purple : Colors.blue,
+      //   ),
+      // ),
+      // Padding(
+      //   padding: EdgeInsets.all(3),
+      //   child: CircleAvatar(
+      //     maxRadius: 5,
+      //     minRadius: 3,
+      //     backgroundColor: _pageindex == 4 ? Colors.purple : Colors.blue,
+      //   ),
+      // ),
+      // Padding(
+      //   padding: EdgeInsets.all(3),
+      //   child: CircleAvatar(
+      //     maxRadius: 5,
+      //     minRadius: 3,
+      //     backgroundColor: _pageindex == 5 ? Colors.purple : Colors.blue,
+      //   ),
+      // ),
     ],
   );
 }
 
-class NamePage extends StatefulWidget {
-  @override
-  _NamePageState createState() => _NamePageState();
-}
-
-class _NamePageState extends State<NamePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-class UsernamePage extends StatefulWidget {
-  @override
-  _UsernamePageState createState() => _UsernamePageState();
-}
-
-class _UsernamePageState extends State<UsernamePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-class PasswordPage extends StatefulWidget {
-  @override
-  _PasswordPageState createState() => _PasswordPageState();
-}
-
-class _PasswordPageState extends State<PasswordPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-class CollegeDetailPage extends StatefulWidget {
-  @override
-  CollegeDetailPageState createState() => CollegeDetailPageState();
-}
-
-class CollegeDetailPageState extends State<CollegeDetailPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+Widget _dotCreater(int _pageindex, int _dotNumber) {
+  return Padding(
+    padding: EdgeInsets.all(3),
+    child: CircleAvatar(
+      maxRadius: 5,
+      minRadius: 3,
+      backgroundColor: _pageindex == _dotNumber ? Colors.purple : Colors.blue,
+    ),
+  );
 }
