@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whos_my_roomie/Logic/signIn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:whos_my_roomie/Pages/fillForm.dart';
+import 'package:flutter/services.dart';
 
 class FirstPage extends StatefulWidget {
   @override
@@ -121,6 +120,7 @@ class _FirstPageState extends State<FirstPage>
           ),
           child: TextFormField(
             controller: _password,
+            obscureText: true,
             decoration: InputDecoration(
               labelText: "Password",
               errorText: _passwordMatch
@@ -158,40 +158,12 @@ class _FirstPageState extends State<FirstPage>
                     } else {
                       setState(() {
                         _passwordMatch = false;
+                        vibrate();
                       });
                     }
                   }
                 });
               },
-
-              //   if (!documentInstance.exists) {
-              //         _usernameFound = false;
-              //     } else {
-              //       storedPassword = documentInstance.data["password"];
-              //       if (_signIn(storedPassword, _password.text)) {
-              //         Navigator.pushReplacementNamed(context, '/FillForm');
-              //       } else {
-              //         setState(() {
-              //           _passwordMatch = false;
-              //         });
-              //       }
-              //     }
-              //   }
-              // });
-
-              // signInSearch
-              //     .document(_userName.text)
-              //     .get()
-              //     .then((documentInstance) {
-              //   storedPassword = documentInstance.data["password"];
-              //   if (_signIn(storedPassword, _password.text)) {
-              //     Navigator.pushReplacementNamed(context, '/FillForm');
-              //   } else {
-              //     setState(() {
-              //       _passwordMatch = false;
-              //     });
-              //   }
-              // });
               color: Colors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -227,7 +199,7 @@ class _FirstPageState extends State<FirstPage>
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/SignUp');
+                Navigator.pushReplacementNamed(context, '/SignUp');
               },
               color: Colors.blue,
               shape: RoundedRectangleBorder(
@@ -249,4 +221,13 @@ class _FirstPageState extends State<FirstPage>
       return false;
     }
   }
+
+  void vibrate() async {
+    // bool canVibrate = await Vibrate.canVibrate;
+    // if (vibration) {
+    //   canVibrate ? Vibrate.feedback(FeedbackType.medium) : null;
+    // }
+    await SystemChannels.platform.invokeMethod<void>('HapticFeedback.vibrate');
+  }
+
 }
