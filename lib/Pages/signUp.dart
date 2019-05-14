@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -603,6 +604,7 @@ class _SignUpState extends State<SignUp> {
           onPressed: () {
             if (_formKeyCollege.currentState.validate()) {
               _pushEverythingToFirebase();
+              _manageSharedPreferences();
             } else {
               Fluttertoast.showToast(
                 msg: "Invalid Values",
@@ -647,9 +649,6 @@ class _SignUpState extends State<SignUp> {
               child: MaterialButton(
                 child: Text("Dashboard"),
                 onPressed: () {
-                  // Navigator.of(context).pop();
-                  // Navigator.of(context).pop();
-                  // Navigator.pushNamed(context, '/FillForm');
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       '/FillForm', (Route<dynamic> route) => false);
                 },
@@ -692,9 +691,6 @@ class _SignUpState extends State<SignUp> {
         .setData({
       'username': _usernameController.text,
       'password': _passwordController.text,
-      //'name': _nameController.text,
-      //'collegeName': _collegeDetailsNameController.text,
-      //'graduationYear': _collegeDetailsYearController.text,
     }).then((_) {
       Firestore.instance
           .collection("UserData")
@@ -710,5 +706,11 @@ class _SignUpState extends State<SignUp> {
         });
       });
     });
+  }
+
+  void _manageSharedPreferences() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("LoggedIn", true);
+    pref.setString("username", _usernameController.text);
   }
 }

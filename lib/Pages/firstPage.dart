@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstPage extends StatefulWidget {
   @override
@@ -12,13 +13,15 @@ class _FirstPageState extends State<FirstPage>
   AnimationController _controller;
   Animation<double> _animation;
 
-  final _userName = TextEditingController();
+  final _usernameController = TextEditingController();
   final _password = TextEditingController();
 
   String storedUsername, storedPassword;
 
   bool _passwordMatch = true;
   bool _usernameFound = true;
+
+  String _alreadySignedInUsername;
 
   var signInSearch;
 
@@ -35,14 +38,26 @@ class _FirstPageState extends State<FirstPage>
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
     signInSearch = Firestore.instance.collection("LoginData");
+    _getSharedPreference();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _userName.dispose();
+    _usernameController.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+  void _getSharedPreference() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.getBool("LoggedIn") ?? false) {
+      _alreadySignedInUsername = pref.getString("username");
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/FillForm',
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 
   @override
@@ -106,7 +121,7 @@ class _FirstPageState extends State<FirstPage>
             vertical: 5,
           ),
           child: TextFormField(
-            controller: _userName,
+            controller: _usernameController,
             inputFormatters: <TextInputFormatter>[
               WhitelistingTextInputFormatter(
                 RegExp("[a-zA-Z0-9\@\!\#\$\%\*\.\-\_\=\+\?\]"),
@@ -147,7 +162,7 @@ class _FirstPageState extends State<FirstPage>
               ),
               onPressed: () {
                 signInSearch
-                    .document(_userName.text)
+                    .document(_usernameController.text)
                     .get()
                     .then((documentInstance) {
                   if (!documentInstance.exists) {
@@ -159,6 +174,7 @@ class _FirstPageState extends State<FirstPage>
                     storedPassword = documentInstance.data["password"];
                     if (_signIn(storedPassword, _password.text)) {
                       _passwordMatch = true;
+                      _setSharedPreferences();
                       Navigator.pushReplacementNamed(context, '/FillForm');
                     } else {
                       setState(() {
@@ -224,5 +240,11 @@ class _FirstPageState extends State<FirstPage>
       print("Not Logged in");
       return false;
     }
+  }
+
+  void _setSharedPreferences() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("LoggedIn", true);
+    pref.setString("username", _usernameController.text);
   }
 }
