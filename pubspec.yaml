@@ -54,6 +54,11 @@ flutter:
     - assets/icon.png
     - assets/icon-full.png
     - assets/green-tick.png
+    - assets/HouseEmoji.png
+    - assets/HuggingFaceEmoji.png
+    - assets/SmilingEmojiwithEyesOpened.png
+    - assets/SmilingEmojiwithSmilingEyes.png
+    - assets/ZipperMouthFaceEmoji.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

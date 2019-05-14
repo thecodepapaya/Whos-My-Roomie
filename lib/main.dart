@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whos_my_roomie/Pages/Dashboard.dart';
 import "package:whos_my_roomie/Pages/firstPage.dart";
 import 'package:whos_my_roomie/Pages/fillForm.dart';
 import 'package:whos_my_roomie/Pages/signUp.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
         '/FillForm': (BuildContext context) => new FillForm(),
         '/SignUp': (BuildContext context) => new SignUp(),
         '/Firstpage': (BuildContext context) => new FirstPage(),
+        '/Dashboard':(BuildContext context) => new Dashboard(),
       },
     );
   }

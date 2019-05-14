@@ -69,15 +69,31 @@ class _SignUpState extends State<SignUp> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              Image.asset(
+                "assets/HuggingFaceEmoji.png",
+                scale: 3,
+              ),
               Padding(
-                padding: EdgeInsets.all(50),
-                child: Text("Creating an account will only take a minute"),
+                padding: EdgeInsets.all(40),
+                child: Text(
+                  "It feels so good to have you here",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.all(50),
                 child: MaterialButton(
                   color: Colors.blue,
-                  child: Text("Get Started"),
+                  child: Text(
+                    "Let's get Started!",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
                       _stackIndex++;
@@ -99,13 +115,22 @@ class _SignUpState extends State<SignUp> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/icon.png"),
-              Text("What shall we call you?"),
+              Image.asset("assets/SmilingEmojiwithSmilingEyes.png"),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "What shall we call you?",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
               Form(
                 autovalidate: _autoValidateName,
                 key: _formKeyName,
                 child: Padding(
-                  padding: EdgeInsets.all(40),
+                  padding: EdgeInsets.symmetric(vertical: 25, horizontal: 40),
                   child: TextFormField(
                     controller: _nameController,
                     textCapitalization: TextCapitalization.words,
@@ -132,6 +157,10 @@ class _SignUpState extends State<SignUp> {
                     },
                     decoration: InputDecoration(
                       labelText: "Full Name",
+                      //prefixIcon: Icon(Icons.face),
+                      icon: Icon(
+                        Icons.face,
+                      ),
                     ),
                   ),
                 ),
@@ -193,13 +222,24 @@ class _SignUpState extends State<SignUp> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Image.asset("assets/icon.png"),
-                    Text("Get unique username"),
+                    Image.asset("assets/SmilingEmojiwithEyesOpened.png"),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        "Hey! Let's get you a Unique Username",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                     Form(
                       autovalidate: _autoValidateUsername,
                       key: _formKeyUsername,
                       child: Padding(
-                        padding: EdgeInsets.all(40),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 25, horizontal: 40),
                         child: TextFormField(
                           controller: _usernameController,
                           inputFormatters: <TextInputFormatter>[
@@ -228,6 +268,9 @@ class _SignUpState extends State<SignUp> {
                             errorText: _usernameFound
                                 ? "Username Already exists"
                                 : null,
+                            icon: Icon(
+                              Icons.verified_user,
+                            ),
                           ),
                         ),
                       ),
@@ -295,15 +338,25 @@ class _SignUpState extends State<SignUp> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/icon.png"),
-              Text("Choose a password"),
+              Image.asset("assets/ZipperMouthFaceEmoji.png"),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                child: Text(
+                  "Don't worry, we don't store your Passwords in plain.txt",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
               Form(
                 autovalidate: _autoValidatePassword,
                 key: _formKeyPassword,
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(40),
+                      padding: EdgeInsets.fromLTRB(40, 10, 40, 20),
                       child: TextFormField(
                         obscureText: true,
                         controller: _passwordController,
@@ -328,11 +381,14 @@ class _SignUpState extends State<SignUp> {
                         },
                         decoration: InputDecoration(
                           labelText: "Password",
+                          icon: Icon(
+                            Icons.vpn_key,
+                          ),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(40),
+                      padding: EdgeInsets.fromLTRB(40, 10, 40, 20),
                       child: TextFormField(
                         obscureText: true,
                         controller: _passwordConfirmController,
@@ -357,6 +413,9 @@ class _SignUpState extends State<SignUp> {
                         },
                         decoration: InputDecoration(
                           labelText: "Confirm Passoword",
+                          icon: Icon(
+                            Icons.vpn_key,
+                          ),
                         ),
                       ),
                     ),
@@ -411,31 +470,50 @@ class _SignUpState extends State<SignUp> {
 //############################################ CollegeDetailsPage ######################################################
   Widget collegeDetailsPageBuilder() {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
+      body: Center(
+        child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/icon.png"),
+              Image.asset("assets/HouseEmoji.png"),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     "Enter your ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    ),
                   ),
                   Text(
                     "College",
                     style: TextStyle(
                       decoration: TextDecoration.lineThrough,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
                     " Institute",
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
+                      fontSize: 20,
                     ),
                   ),
-                  Text(" Details")
+                  Text(
+                    " Details",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    ),
+                  )
                 ],
+              ),
+              SizedBox(
+                height: 10,
               ),
               Form(
                 key: _formKeyCollege,
@@ -443,7 +521,7 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(40),
+                      padding: EdgeInsets.fromLTRB(40, 10, 40, 20),
                       child: TextFormField(
                         controller: _collegeDetailsNameController,
                         inputFormatters: <TextInputFormatter>[
@@ -459,11 +537,14 @@ class _SignUpState extends State<SignUp> {
                         },
                         decoration: InputDecoration(
                           labelText: "Isntitute Name",
+                          icon: Icon(
+                            Icons.home,
+                          ),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(40),
+                      padding: EdgeInsets.fromLTRB(40, 10, 40, 20),
                       child: TextFormField(
                         controller: _collegeDetailsYearController,
                         keyboardType: TextInputType.number,
@@ -488,6 +569,9 @@ class _SignUpState extends State<SignUp> {
                         },
                         decoration: InputDecoration(
                           labelText: "Graduation Year",
+                          icon: Icon(
+                            Icons.calendar_today,
+                          ),
                         ),
                       ),
                     ),
@@ -608,9 +692,9 @@ class _SignUpState extends State<SignUp> {
         .setData({
       'username': _usernameController.text,
       'password': _passwordController.text,
-      'name': _nameController.text,
-      'collegeName': _collegeDetailsNameController.text,
-      'graduationYear': _collegeDetailsYearController.text,
+      //'name': _nameController.text,
+      //'collegeName': _collegeDetailsNameController.text,
+      //'graduationYear': _collegeDetailsYearController.text,
     }).then((_) {
       Firestore.instance
           .collection("UserData")
