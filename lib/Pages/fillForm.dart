@@ -9,7 +9,9 @@ class _FillFormState extends State<FillForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: null,
+      body: Center(
+        child: Text("Fill Form aka Dashboard"),
+      ),
     );
   }
 }

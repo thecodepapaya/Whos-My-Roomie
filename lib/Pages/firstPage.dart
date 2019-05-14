@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirstPage extends StatefulWidget {
@@ -106,6 +107,11 @@ class _FirstPageState extends State<FirstPage>
           ),
           child: TextFormField(
             controller: _userName,
+            inputFormatters: <TextInputFormatter>[
+              WhitelistingTextInputFormatter(
+                RegExp("[a-zA-Z0-9\@\!\#\$\%\*\.\-\_\=\+\?\]"),
+              ),
+            ],
             decoration: InputDecoration(
               labelText: "Username",
               errorText: _usernameFound ? null : 'Username not found !',
