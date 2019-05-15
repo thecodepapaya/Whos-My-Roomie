@@ -5,6 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
+import 'package:whos_my_roomie/Pages/Dashboard.dart';
+
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
@@ -680,8 +682,11 @@ class _SignUpState extends State<SignUp> {
               child: MaterialButton(
                 child: Text("Dashboard"),
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/Dashboard', (Route<dynamic> route) => false);
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              Dashboard(username: _usernameController.text)),
+                      (Route<dynamic> route) => false);
                 },
                 color: Colors.blue,
               ),

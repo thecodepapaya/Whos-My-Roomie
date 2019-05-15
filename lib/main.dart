@@ -4,7 +4,6 @@ import 'package:whos_my_roomie/Pages/Dashboard.dart';
 import "package:whos_my_roomie/Pages/firstPage.dart";
 import 'package:whos_my_roomie/Pages/fillForm.dart';
 import 'package:whos_my_roomie/Pages/signUp.dart';
-import 'package:whos_my_roomie/Pages/Feedback.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

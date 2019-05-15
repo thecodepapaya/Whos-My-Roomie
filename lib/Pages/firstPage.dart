@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'package:whos_my_roomie/Pages/Dashboard.dart';
 
 class FirstPage extends StatefulWidget {
   @override
@@ -180,7 +181,12 @@ class _FirstPageState extends State<FirstPage>
                         if (_signIn(storedPassword, _password.text)) {
                           _passwordMatch = true;
                           _setSharedPreferences();
-                          Navigator.pushReplacementNamed(context, '/Dashboard');
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => Dashboard(
+                                    username: _usernameController.text),
+                              ));
                         } else {
                           setState(() {
                             _passwordMatch = false;
