@@ -4,12 +4,21 @@ import "package:whos_my_roomie/Pages/firstPage.dart";
 import 'package:whos_my_roomie/Pages/fillForm.dart';
 import 'package:whos_my_roomie/Pages/signUp.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  String _savedUsername;
+
+  void _getSavedUsername() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    _savedUsername = pref.getString("username") ?? "Guest Login";
+  }
+
   @override
   Widget build(BuildContext context) {
+    _getSavedUsername();
     return MaterialApp(
       title: "Who's My Roomie?",
       debugShowCheckedModeBanner: false,
@@ -21,14 +30,20 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/FillForm': (BuildContext context) => new FillForm(),
         '/SignUp': (BuildContext context) => new SignUp(),
-        '/Firstpage': (BuildContext context) => new FirstPage(),
+        //'/Firstpage': (BuildContext context) => new FirstPage(),
         //'/Dashboard': (BuildContext context) => new Dashboard(),
       },
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/Dashboard':
             return PageTransition(
-              child: Dashboard(),
+              child: Dashboard(username: _savedUsername),
+              type: PageTransitionType.fade,
+            );
+            break;
+          case '/FirstPage':
+            return PageTransition(
+              child: FirstPage(),
               type: PageTransitionType.fade,
             );
             break;
