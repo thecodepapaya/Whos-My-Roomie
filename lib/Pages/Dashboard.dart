@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
 import 'package:whos_my_roomie/Pages/BugReport.dart' as mybugReport;
 import 'package:whos_my_roomie/Pages/Feedback.dart' as myFeedback;
+//import 'package:whos_my_roomie/Pages/Settings.dart' as inAppSettings;
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key, this.username});
@@ -17,18 +19,30 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   var documentInstance;
+  bool darkMode = false;
+  SharedPreferences pref;
+
+  _getThemePrefs() async {
+    pref = await SharedPreferences.getInstance();
+    setState(() {
+      darkMode = pref.getBool("darkTheme") ?? false;
+    });
+    print("darkTheme in _getThemePrefs: $darkMode");
+  }
 
   @override
   void initState() {
-    super.initState();
     documentInstance = Firestore.instance
         .collection("UserData")
         .document(widget.username)
         .get();
+    _getThemePrefs();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    //_getThemePrefs();
     return Scaffold(
       appBar: AppBar(
         title: Text("Who's My Roomie?"),
@@ -124,8 +138,30 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             ListTile(
-              title: Text("Settings"),
-              onTap: () {},
+              title: Text("Dark Mode"),
+              trailing: Switch(
+                value: darkMode,
+                onChanged: (_) {
+                  print("darkTheme before confirmation Dialog: $darkMode");
+                  print("_ before confirmation Dialog: $_");
+                  _showThemeConfirmationDialog();
+                  // if (darkMode) {
+                  //   _showThemeConfirmationDialog();
+                  // } else {
+                  //   _showThemeConfirmationDialog();
+                  // }
+                },
+              ),
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       fullscreenDialog: true,
+              //       builder: (BuildContext context) =>
+              //           inAppSettings.Settings(username: widget.username),
+              //     ),
+              //   );
+              // },
             ),
             ListTile(
               title: Text("Logout"),
@@ -201,6 +237,44 @@ class _DashboardState extends State<Dashboard> {
       body: Center(
         child: Text("The Dashboard"),
       ),
+    );
+  }
+
+  Future _showThemeConfirmationDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Warning"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("OK"),
+              onPressed: () {
+                setState(() {
+                  if (darkMode) {
+                    darkMode = false;
+                    pref.setBool("darkTheme", darkMode);
+                  } else {
+                    darkMode = true;
+                    pref.setBool("darkTheme", darkMode);
+                  }
+                  SystemNavigator.pop();
+                });
+                print("darkTheme after pressing 'OK': $darkMode");
+              },
+            ),
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+          content: Text(
+            "In order to change the theme you need to restart the app",
+          ),
+        );
+      },
     );
   }
 
