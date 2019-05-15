@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class FirstPage extends StatefulWidget {
   @override
@@ -54,7 +55,7 @@ class _FirstPageState extends State<FirstPage>
     if (pref.getBool("LoggedIn") ?? false) {
       _alreadySignedInUsername = pref.getString("username");
       Navigator.of(context).pushNamedAndRemoveUntil(
-        '/FillForm',
+        '/Dashboard',
         (Route<dynamic> route) => false,
       );
     }
@@ -160,29 +161,57 @@ class _FirstPageState extends State<FirstPage>
                   color: Colors.white,
                 ),
               ),
-              onPressed: () {
-                signInSearch
-                    .document(_usernameController.text)
-                    .get()
-                    .then((documentInstance) {
-                  if (!documentInstance.exists) {
-                    setState(() {
-                      _usernameFound = false;
+              onPressed: () async {
+                try {
+                  final result = await InternetAddress.lookup('google.com');
+                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                    print('connected to internet, searching usernames');
+                    signInSearch
+                        .document(_usernameController.text)
+                        .get()
+                        .then((documentInstance) {
+                      if (!documentInstance.exists) {
+                        setState(() {
+                          _usernameFound = false;
+                        });
+                      } else {
+                        _usernameFound = true;
+                        storedPassword = documentInstance.data["password"];
+                        if (_signIn(storedPassword, _password.text)) {
+                          _passwordMatch = true;
+                          _setSharedPreferences();
+                          Navigator.pushReplacementNamed(context, '/Dashboard');
+                        } else {
+                          setState(() {
+                            _passwordMatch = false;
+                          });
+                        }
+                      }
                     });
-                  } else {
-                    _usernameFound = true;
-                    storedPassword = documentInstance.data["password"];
-                    if (_signIn(storedPassword, _password.text)) {
-                      _passwordMatch = true;
-                      _setSharedPreferences();
-                      Navigator.pushReplacementNamed(context, '/FillForm');
-                    } else {
-                      setState(() {
-                        _passwordMatch = false;
-                      });
-                    }
                   }
-                });
+                } on SocketException catch (_) {
+                  print('not connected');
+                  return showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("No Internet"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("OK"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                        content: Text(
+                          "You are not conncted to the Internet.",
+                        ),
+                      );
+                    },
+                  );
+                }
               },
               color: Colors.blue,
               shape: RoundedRectangleBorder(

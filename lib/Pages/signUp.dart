@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class SignUp extends StatefulWidget {
   @override
@@ -95,10 +96,39 @@ class _SignUpState extends State<SignUp> {
                       fontSize: 18,
                     ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _stackIndex++;
-                    });
+                  onPressed: () async {
+                    try {
+                      final result = await InternetAddress.lookup('google.com');
+                      if (result.isNotEmpty &&
+                          result[0].rawAddress.isNotEmpty) {
+                        print('Connected, can start SignUp');
+                        setState(() {
+                          _stackIndex++;
+                        });
+                      }
+                    } on SocketException catch (_) {
+                      print('not connected, cannot start signUp');
+                      return showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("No Internet"),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                            content: Text(
+                              "You must be connected to the internet to SignUp.",
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
               ),
@@ -144,7 +174,7 @@ class _SignUpState extends State<SignUp> {
                       if (_name.contains(RegExp("[\ ]")) == true) {
                         return null;
                       } else {
-                        return "Please enter full name";
+                        return "Please enter your full name";
                       }
                     },
                     onFieldSubmitted: (_) {
@@ -603,8 +633,9 @@ class _SignUpState extends State<SignUp> {
           textColor: Colors.white,
           onPressed: () {
             if (_formKeyCollege.currentState.validate()) {
-              _pushEverythingToFirebase();
-              _manageSharedPreferences();
+              _handleInternetConnectivity();
+              //_pushEverythingToFirebase();
+              //_manageSharedPreferences();
             } else {
               Fluttertoast.showToast(
                 msg: "Invalid Values",
@@ -650,7 +681,7 @@ class _SignUpState extends State<SignUp> {
                 child: Text("Dashboard"),
                 onPressed: () {
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/FillForm', (Route<dynamic> route) => false);
+                      '/Dashboard', (Route<dynamic> route) => false);
                 },
                 color: Colors.blue,
               ),
@@ -682,6 +713,39 @@ class _SignUpState extends State<SignUp> {
         backgroundColor: _pageIndex == _dotNumber ? Colors.purple : Colors.blue,
       ),
     );
+  }
+
+  _handleInternetConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('Connected, can SignUp');
+        _pushEverythingToFirebase();
+        _manageSharedPreferences();
+      }
+    } on SocketException catch (_) {
+      print('not connected, cannot signUp');
+      return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("No Internet"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+            content: Text(
+              "You are not conncted to the Internet.",
+            ),
+          );
+        },
+      );
+    }
   }
 
   void _pushEverythingToFirebase() {

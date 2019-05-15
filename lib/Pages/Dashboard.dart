@@ -8,8 +8,23 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Who's My Roomie?"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+            tooltip: "Options",
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: DrawerHeader(),
+      ),
+      body: Center(
+        child: Text("The Dashboard"),
+      ),
     );
   }
 }
