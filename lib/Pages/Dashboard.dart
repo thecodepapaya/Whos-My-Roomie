@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
+import 'package:whos_my_roomie/Pages/BugReport.dart' as mybugReport;
+import 'package:whos_my_roomie/Pages/Feedback.dart' as myFeedback;
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key, this.username});
@@ -41,13 +44,18 @@ class _DashboardState extends State<Dashboard> {
         child: ListView(
           children: <Widget>[
             DrawerHeader(
-              child: GestureDetector(
+              child: Container(
                 child: Column(
                   children: <Widget>[
                     Row(
                       children: <Widget>[
                         CircleAvatar(
-                          child: Text(widget.username[0].toUpperCase()),
+                          child: Text(
+                            widget.username[0].toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
                           maxRadius: 25,
                         ),
                         SizedBox(
@@ -57,6 +65,10 @@ class _DashboardState extends State<Dashboard> {
                           width: MediaQuery.of(context).size.width / 2,
                           child: Text(
                             widget.username,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -150,18 +162,38 @@ class _DashboardState extends State<Dashboard> {
               title: Text("Share this app"),
               subtitle: Text("Liked this app? Spread the word !"),
               onTap: () {
-                Share.share('Hey! Checkout this awesome app by *bLaCkLiGhT*\nhttps://github.com/ashutoshsingh05/Whos-My-Roomie/releases');
+                Share.share(
+                  'Hey! Checkout this awesome app by *bLaCkLiGhT*\nhttps://github.com/ashutoshsingh05/Whos-My-Roomie/',
+                );
               },
             ),
             ListTile(
               title: Text("Give Feedback"),
               subtitle: Text("We'd love to hear from you"),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (BuildContext context) =>
+                        myFeedback.Feedback(username: widget.username),
+                  ),
+                );
+              },
             ),
             ListTile(
               title: Text("Report Bug"),
               subtitle: Text("Help us make this app better!"),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (BuildContext context) =>
+                        mybugReport.BugReport(username: widget.username),
+                  ),
+                );
+              },
             )
           ],
         ),

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:whos_my_roomie/Pages/Dashboard.dart';
 import "package:whos_my_roomie/Pages/firstPage.dart";
 import 'package:whos_my_roomie/Pages/fillForm.dart';
 import 'package:whos_my_roomie/Pages/signUp.dart';
+import 'package:whos_my_roomie/Pages/Feedback.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   String _savedUsername;
@@ -30,7 +35,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/FillForm': (BuildContext context) => new FillForm(),
         '/SignUp': (BuildContext context) => new SignUp(),
-        //'/Firstpage': (BuildContext context) => new FirstPage(),
+        //'/Feedback': (BuildContext context) => new Feedback(),
         //'/Dashboard': (BuildContext context) => new Dashboard(),
       },
       onGenerateRoute: (settings) {
