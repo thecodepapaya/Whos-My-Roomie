@@ -39,7 +39,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    //_getSavedPref();
     return MaterialApp(
       title: "Who's My Roomie?",
       debugShowCheckedModeBanner: false,

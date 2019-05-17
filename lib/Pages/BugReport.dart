@@ -69,7 +69,7 @@ class _BugReportState extends State<BugReport> {
                     WhitelistingTextInputFormatter(RegExp("[0-9\.]")),
                   ],
                   decoration: InputDecoration(
-                    filled: true,
+                    //filled: true,
                     fillColor: Colors.white,
                     labelText: "Android Version",
                     border: OutlineInputBorder(
@@ -97,7 +97,7 @@ class _BugReportState extends State<BugReport> {
                         RegExp("[a-zA-Z0-9\ \-\(\)]"))
                   ],
                   decoration: InputDecoration(
-                    filled: true,
+                    //filled: true,
                     fillColor: Colors.white,
                     labelText: "Phone Model",
                     border: OutlineInputBorder(
@@ -126,7 +126,7 @@ class _BugReportState extends State<BugReport> {
                         RegExp("[\*\^\~\`\[\]\{\}\<\>\|]"))
                   ],
                   decoration: InputDecoration(
-                    filled: true,
+                    //filled: true,
                     fillColor: Colors.white,
                     labelText: "Detailed Description",
                     helperText: "This will help us find the problem easily",
