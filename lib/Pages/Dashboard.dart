@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:share/share.dart';
 import 'dart:io';
+import 'dart:math';
 import 'package:whos_my_roomie/Pages/BugReport.dart' as mybugReport;
 import 'package:whos_my_roomie/Pages/Feedback.dart' as myFeedback;
 
@@ -23,8 +23,9 @@ class _DashboardState extends State<Dashboard> {
   bool darkMode = false;
   bool _internetConnectivity = false;
   SharedPreferences pref;
-  bool _filledForm =
-      true; // remember to make it false before  building the final version
+  bool _filledForm = true; //make it false when carousal is built
+
+  var _profileName = "Name", _collegeName = "College Name", _graduationYear = "Year";
 
   _getThemePrefs() async {
     pref = await SharedPreferences.getInstance();
@@ -34,7 +35,7 @@ class _DashboardState extends State<Dashboard> {
     print("darkTheme in _getThemePrefs: $darkMode");
   }
 
-  _getFilledFormDetails() {
+  _checkFilledForm() {
     documentInstance.then((_form) {
       if (_form.data["formfilled"] != true) {
         _filledForm = false;
@@ -44,15 +45,39 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  @override
-  void initState() {
-    documentInstance = Firestore.instance
+  _fetchProfileDetails() async {
+    _checkInternetConnectivity();
+    documentInstance = await Firestore.instance
         .collection("UserData")
         .document(widget.username)
         .get();
+
+    var _profileInstance =
+        Firestore.instance.collection("UserData").document(widget.username);
+    await _profileInstance.get().then((doc) {
+      if (doc.exists) {
+        setState(() {
+          _profileName = doc.data["name"];
+          _collegeName = doc.data["collegeName"];
+          _graduationYear = doc.data["graduationYear"];
+        });
+      } else {
+        print("No documents found!");
+      }
+    }).catchError((onError) {
+      print("reached error in _fetchProfileDetails");
+    });
+    print("Not connected to internet");
+  }
+
+  @override
+  void initState() {
     _getThemePrefs();
     _checkInternetConnectivity();
-    _getFilledFormDetails();
+    //_checkFilledForm(); // remove comment after carousal is built
+    _filledForm =
+        true; // for debugging puposes only. Rmeove when carousel is built
+    _fetchProfileDetails();
     super.initState();
   }
 
@@ -61,6 +86,7 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Who's My Roomie?"),
+        //backgroundColor: _randomColor(),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -128,20 +154,52 @@ class _DashboardState extends State<Dashboard> {
               );
             return Container(
               child: CarouselSlider(
-                items: snapshot.data.documents.map((DocumentSnapshot doc) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
+                height: 400,
+                enlargeCenterPage: true,
+                autoPlay: true,
+                viewportFraction: 0.8,
+                enableInfiniteScroll: true,
+                autoPlayCurve: Curves.easeIn,
+                items: snapshot.data.documents.map(
+                  (DocumentSnapshot doc) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(color: Colors.amber),
-                          child: Text(
-                            doc["username"],
-                            style: TextStyle(fontSize: 16.0),
-                          ));
-                    },
-                  );
-                }).toList(),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: _randomColor(),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  doc["username"],
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                                Text(
+                                  doc["name"],
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                                Text(
+                                  doc["collegeName"],
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                                Text(
+                                  doc["graduationYear"],
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ).toList(),
               ),
             );
         }
@@ -194,7 +252,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       SizedBox(
                         child: Text(
-                          "Ashutosh Singh",
+                          _profileName,
                           overflow: TextOverflow.ellipsis,
                         ),
                         width: MediaQuery.of(context).size.width * 3 / 5,
@@ -211,7 +269,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       SizedBox(
                         child: Text(
-                          "Indian Intitute of Information Technology, Vadodara",
+                          _collegeName,
                           overflow: TextOverflow.ellipsis,
                         ),
                         width: MediaQuery.of(context).size.width * 3 / 5,
@@ -226,7 +284,7 @@ class _DashboardState extends State<Dashboard> {
                       SizedBox(
                         width: 50,
                       ),
-                      Text("Batch of 2022"),
+                      Text("Batch of $_graduationYear"),
                     ],
                   ),
                 ],
@@ -342,6 +400,7 @@ class _DashboardState extends State<Dashboard> {
                     pref.setBool("darkTheme", darkMode);
                   }
                   SystemNavigator.pop();
+                  //SystemSound.play(SystemSoundType.click);
                 });
                 print("darkTheme after pressing 'OK': $darkMode");
               },
@@ -372,18 +431,80 @@ class _DashboardState extends State<Dashboard> {
       } else {
         print('not connected in try');
         _internetConnectivity = false;
-        return false;
       }
     } on SocketException catch (_) {
       print('not connected in catch');
       _internetConnectivity = false;
-      return false;
     }
   }
+
+  // _noInternetWarning() {
+  //   return showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           children: <Widget>[
+  //             Icon(Icons.warning),
+  //             SizedBox(
+  //               width: 7,
+  //             ),
+  //             Text("No Internet"),
+  //           ],
+  //         ),
+  //         content: Text(
+  //           "No internet connectivity detected. Please connect to the internet and try again",
+  //         ),
+  //         actions: <Widget>[
+  //           // FlatButton(
+  //           //   child: Text("Retry"),
+  //           //   onPressed: () {
+  //           //     setState(() {
+  //           //       Navigator.pop(context);
+  //           //     }); // Known BUG: Need to tap 2 times on RETRY to successfully re-build the Screen
+  //           //   },
+  //           // ),
+  //           FlatButton(
+  //             child: Text("Exit"),
+  //             onPressed: () {
+  //               SystemNavigator.pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   _handleLogoutSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setBool("LoggedIn", false);
     pref.setString("username", null);
+  }
+
+  MaterialColor _randomColor() {
+    List _colorsList = <MaterialColor>[
+      Colors.red,
+      Colors.amber,
+      Colors.blue,
+      Colors.blueGrey,
+      Colors.brown,
+      Colors.cyan,
+      Colors.deepOrange,
+      Colors.deepPurple,
+      Colors.green,
+      Colors.grey,
+      Colors.indigo,
+      Colors.lightBlue,
+      Colors.lightGreen,
+      Colors.lime,
+      Colors.orange,
+      Colors.pink,
+      Colors.purple,
+      Colors.teal,
+      Colors.yellow,
+    ];
+    return _colorsList[Random().nextInt(19)];
   }
 }
