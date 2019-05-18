@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,9 @@ class _DashboardState extends State<Dashboard> {
   SharedPreferences pref;
   bool _filledForm = true; //make it false when carousal is built
 
-  var _profileName = "Name", _collegeName = "College Name", _graduationYear = "Year";
+  var _profileName = "Name",
+      _collegeName = "College Name",
+      _graduationYear = "Year";
 
   _getThemePrefs() async {
     pref = await SharedPreferences.getInstance();
@@ -133,7 +136,12 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _carouselBuilder() {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('UserData').snapshots(),
+      stream: Firestore.instance
+          .collection('UserData')
+          .where("graduationYear", isEqualTo: _graduationYear)
+          //.where("filledForm", isEqualTo: "true")
+          .orderBy("createdAt", descending: true)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) return new Text('${snapshot.error}');
         switch (snapshot.connectionState) {
@@ -152,13 +160,18 @@ class _DashboardState extends State<Dashboard> {
               return Center(
                 child: Text('No data found!'),
               );
+            if (snapshot.data.documents.toString() == "[]") {
+              // if no student of the same batch is found
+              print("documents = [] true");
+              return _awSnap();
+            }
             return Container(
               child: CarouselSlider(
-                height: 400,
+                height: 400, //MediaQuery.of(context).size.height * 3 / 4,
                 enlargeCenterPage: true,
-                autoPlay: true,
+                //autoPlay: true,
                 viewportFraction: 0.8,
-                enableInfiniteScroll: true,
+                enableInfiniteScroll: false,
                 autoPlayCurve: Curves.easeIn,
                 items: snapshot.data.documents.map(
                   (DocumentSnapshot doc) {
@@ -176,21 +189,38 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: CircleAvatar(
+                                    child: Text(
+                                      doc["name"][0].toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    maxRadius: 30,
+                                  ),
+                                ),
                                 Text(
                                   doc["username"],
                                   style: TextStyle(fontSize: 16.0),
+                                  textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   doc["name"],
                                   style: TextStyle(fontSize: 16.0),
+                                  textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   doc["collegeName"],
                                   style: TextStyle(fontSize: 16.0),
+                                  textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   doc["graduationYear"],
                                   style: TextStyle(fontSize: 16.0),
+                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
@@ -436,6 +466,59 @@ class _DashboardState extends State<Dashboard> {
       print('not connected in catch');
       _internetConnectivity = false;
     }
+  }
+
+  Widget _awSnap() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 45, vertical: 20),
+            child: Text(
+              "Aw, Snap! :(",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 15, bottom: 60, left: 45, right: 45),
+            child: Text(
+              'It looks like out none of your batchmates have tried this app yet.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+            child: InkWell(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.share),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Share Now!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {
+                Share.share(
+                  'Hey! Checkout this awesome app by *bLaCkLiGhT*\nhttps://github.com/ashutoshsingh05/Whos-My-Roomie/',
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // _noInternetWarning() {
