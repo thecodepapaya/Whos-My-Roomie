@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ui' as prefix0;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +10,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:whos_my_roomie/Pages/BugReport.dart' as mybugReport;
 import 'package:whos_my_roomie/Pages/Feedback.dart' as myFeedback;
+import 'package:whos_my_roomie/Pages/Profile.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key, this.username});
@@ -24,7 +26,7 @@ class _DashboardState extends State<Dashboard> {
   bool darkMode = false;
   bool _internetConnectivity = false;
   SharedPreferences pref;
-  bool _filledForm = true; //make it false when carousal is built
+  bool _filledForm = true; //make it false when carousel is built
 
   var _profileName = "Name",
       _collegeName = "College Name",
@@ -166,6 +168,14 @@ class _DashboardState extends State<Dashboard> {
               return _awSnap();
             }
             return Container(
+              height: double.infinity,
+              // decoration: BoxDecoration(
+              //   gradient: LinearGradient(
+              //     colors: [_randomColor(), _randomColor()],
+              //     begin: Alignment.topCenter,
+              //     end: Alignment.bottomCenter,
+              //   ),
+              // ),
               child: CarouselSlider(
                 height: 400, //MediaQuery.of(context).size.height * 3 / 4,
                 enlargeCenterPage: true,
@@ -177,52 +187,71 @@ class _DashboardState extends State<Dashboard> {
                   (DocumentSnapshot doc) {
                     return Builder(
                       builder: (BuildContext context) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: _randomColor(),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: CircleAvatar(
-                                    child: Text(
-                                      doc["name"][0].toUpperCase(),
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    maxRadius: 30,
-                                  ),
-                                ),
-                                Text(
-                                  doc["username"],
-                                  style: TextStyle(fontSize: 16.0),
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  doc["name"],
-                                  style: TextStyle(fontSize: 16.0),
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  doc["collegeName"],
-                                  style: TextStyle(fontSize: 16.0),
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  doc["graduationYear"],
-                                  style: TextStyle(fontSize: 16.0),
-                                  textAlign: TextAlign.center,
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Profile(username: doc["username"]),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: _randomColor(),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  color: Colors.black54,
+                                  blurRadius: 4,
+                                  offset: Offset(5, 5),
                                 ),
                               ],
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: CircleAvatar(
+                                      child: Text(
+                                        doc["name"][0].toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      maxRadius: 30,
+                                    ),
+                                  ),
+                                  Text(
+                                    doc["username"],
+                                    style: TextStyle(fontSize: 16.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    doc["name"],
+                                    style: TextStyle(fontSize: 16.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    doc["collegeName"],
+                                    style: TextStyle(fontSize: 16.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    doc["graduationYear"],
+                                    style: TextStyle(fontSize: 16.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -242,82 +271,94 @@ class _DashboardState extends State<Dashboard> {
       child: ListView(
         children: <Widget>[
           DrawerHeader(
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      CircleAvatar(
-                        child: Text(
-                          widget.username[0].toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 25,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return Profile(username: widget.username);
+                    },
+                  ),
+                );
+              },
+              child: Container(
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        CircleAvatar(
+                          child: Text(
+                            widget.username[0].toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                          maxRadius: 25,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: Text(
+                            widget.username,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        maxRadius: 25,
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Text(
-                          widget.username,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 50,
+                        ),
+                        SizedBox(
+                          child: Text(
+                            _profileName,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
+                          width: MediaQuery.of(context).size.width * 3 / 5,
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 50,
-                      ),
-                      SizedBox(
-                        child: Text(
-                          _profileName,
-                          overflow: TextOverflow.ellipsis,
+                      ],
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 50,
                         ),
-                        width: MediaQuery.of(context).size.width * 3 / 5,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 50,
-                      ),
-                      SizedBox(
-                        child: Text(
-                          _collegeName,
-                          overflow: TextOverflow.ellipsis,
+                        SizedBox(
+                          child: Text(
+                            _collegeName,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          width: MediaQuery.of(context).size.width * 3 / 5,
                         ),
-                        width: MediaQuery.of(context).size.width * 3 / 5,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Text("Batch of $_graduationYear"),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Text("Batch of $_graduationYear"),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
