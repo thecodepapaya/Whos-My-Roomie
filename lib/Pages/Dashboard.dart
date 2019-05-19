@@ -11,6 +11,7 @@ import 'dart:math';
 import 'package:whos_my_roomie/Pages/BugReport.dart' as mybugReport;
 import 'package:whos_my_roomie/Pages/Feedback.dart' as myFeedback;
 import 'package:whos_my_roomie/Pages/Profile.dart';
+import 'package:whos_my_roomie/Utils/RoomieFinder.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key, this.username});
@@ -22,6 +23,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  RoomieFinder roomie;
+
   var documentInstance;
   bool darkMode = false;
   bool _internetConnectivity = false;
@@ -83,6 +86,7 @@ class _DashboardState extends State<Dashboard> {
     _filledForm =
         true; // for debugging puposes only. Rmeove when carousel is built
     _fetchProfileDetails();
+    roomie = RoomieFinder(widget.username);
     super.initState();
   }
 
@@ -154,6 +158,11 @@ class _DashboardState extends State<Dashboard> {
             );
           case ConnectionState.active:
           case ConnectionState.done:
+            if (snapshot.data.documents.toString() == "[]") {
+              // if no student of the same batch is found
+              print("documents = [] true");
+              return _awSnap();
+            }
             if (snapshot.hasError)
               return Center(
                 child: Text('Error: ${snapshot.error}'),
@@ -162,11 +171,7 @@ class _DashboardState extends State<Dashboard> {
               return Center(
                 child: Text('No data found!'),
               );
-            if (snapshot.data.documents.toString() == "[]") {
-              // if no student of the same batch is found
-              print("documents = [] true");
-              return _awSnap();
-            }
+
             return Container(
               height: double.infinity,
               // decoration: BoxDecoration(
@@ -187,13 +192,40 @@ class _DashboardState extends State<Dashboard> {
                   (DocumentSnapshot doc) {
                     return Builder(
                       builder: (BuildContext context) {
+                        //function to help build the table on carousel slider cards
+                        _tableBuilder() {
+                          // return Table(
+
+                          //     children: [
+                          //       _tableRowBuilder("Name", "${doc['name']}"),
+                          //       _tableRowBuilder(
+                          //           "Username", "${doc['username']}"),
+                          //       _tableRowBuilder(
+                          //           "College", "${doc['collegeName']}"),
+                          //       _tableRowBuilder(
+                          //           "Batch of", "${doc['graduationYear']}")
+                          //     ]);
+                          return [
+                            _tableRowBuilder("Name", "${doc['name']}"),
+                            _tableRowBuilder("Username", "${doc['username']}"),
+                            _tableRowBuilder(
+                                "College", "${doc['collegeName']}"),
+                            _tableRowBuilder(
+                                "Batch of", "${doc['graduationYear']}"),
+                          ];
+                        }
+
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    Profile(username: doc["username"]),
+                                builder: (BuildContext context) => Profile(
+                                      username: doc["username"],
+                                      name: doc["name"],
+                                      collegeName: doc["collegeName"],
+                                      graduationYear: doc["graduationYear"],
+                                    ),
                               ),
                             );
                           },
@@ -215,41 +247,81 @@ class _DashboardState extends State<Dashboard> {
                             ),
                             child: Center(
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: <Widget>[
                                   Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: CircleAvatar(
-                                      child: Text(
-                                        doc["name"][0].toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 40),
+                                    child: Text(
+                                      "${doc['name']}",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w600,
                                       ),
-                                      maxRadius: 30,
                                     ),
                                   ),
-                                  Text(
-                                    doc["username"],
-                                    style: TextStyle(fontSize: 16.0),
-                                    textAlign: TextAlign.center,
+                                  // Padding(
+                                  //   padding: EdgeInsets.all(20),
+                                  //   child: CircleAvatar(
+                                  //     child: Text(
+                                  //       doc["name"][0].toUpperCase(),
+                                  //       style: TextStyle(
+                                  //         fontSize: 25,
+                                  //         fontWeight: FontWeight.w500,
+                                  //       ),
+                                  //     ),
+                                  //     maxRadius: 30,
+                                  //   ),
+                                  // ),
+                                  Padding(
+                                    padding: EdgeInsets.all(15),
+                                    child: SizedBox(
+                                      width: 220,
+                                      child: Table(
+                                        // defaultColumnWidth:
+                                        // IntrinsicColumnWidth(flex: 20),
+                                        // columnWidths: Map<1,TableColumnWidth()> columnWidth,
+                                        children: _tableBuilder(),
+                                        // border: TableBorder.all(
+                                        //   color: Colors.purple,
+                                        //   width: 2,
+                                        //   style: BorderStyle.solid,
+                                        // ),
+                                      ),
+                                    ),
                                   ),
-                                  Text(
-                                    doc["name"],
-                                    style: TextStyle(fontSize: 16.0),
-                                    textAlign: TextAlign.center,
+                                  Padding(
+                                    padding: EdgeInsets.all(30),
+                                    child: Text(
+                                      "Compatibility: ${roomie.roommateCompatibility()} %",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                                   ),
-                                  Text(
-                                    doc["collegeName"],
-                                    style: TextStyle(fontSize: 16.0),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  Text(
-                                    doc["graduationYear"],
-                                    style: TextStyle(fontSize: 16.0),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                  // Text(
+                                  //   doc["username"],
+                                  //   style: TextStyle(fontSize: 16.0),
+                                  //   textAlign: TextAlign.center,
+                                  // ),
+                                  // Text(
+                                  //   doc["name"],
+                                  //   style: TextStyle(fontSize: 16.0),
+                                  //   textAlign: TextAlign.center,
+                                  // ),
+                                  // Text(
+                                  //   doc["collegeName"],
+                                  //   style: TextStyle(fontSize: 16.0),
+                                  //   textAlign: TextAlign.center,
+                                  // ),
+                                  // Text(
+                                  //   doc["graduationYear"],
+                                  //   style: TextStyle(fontSize: 16.0),
+                                  //   textAlign: TextAlign.center,
+                                  // ),
                                 ],
                               ),
                             ),
@@ -600,6 +672,30 @@ class _DashboardState extends State<Dashboard> {
   //     },
   //   );
   // }
+
+  TableRow _tableRowBuilder(String parameter, String value) {
+    return TableRow(
+      children: [
+        _tableCellBuilder("$parameter"),
+        _tableCellBuilder(" : "),
+        _tableCellBuilder("$value"),
+      ],
+    );
+  }
+
+  Widget _tableCellBuilder(String value) {
+    return TableCell(
+      child: Text(
+        value,
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 15,
+        ),
+      ),
+      verticalAlignment: TableCellVerticalAlignment.middle,
+    );
+  }
 
   _handleLogoutSharedPrefs() async {
     SharedPreferences pref = await SharedPreferences.getInstance();

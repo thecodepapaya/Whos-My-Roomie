@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Profile extends StatefulWidget {
-  Profile({@required this.username});
+  Profile({
+    @required this.username,
+    @required this.name,
+    @required this.collegeName,
+    @required this.graduationYear,
+  });
 
-  final username;
+  final username, collegeName, graduationYear, name;
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -16,21 +21,21 @@ class _ProfileState extends State<Profile> {
       _collegeName = "College Name",
       _graduationYear = "GraduationYear";
 
-  _getUserData() async {
-    userData =
-        Firestore.instance.collection("UserData").document(widget.username);
-    await userData.get().then((docInstance) {
-      setState(() {
-        _name = docInstance.data["name"];
-        _collegeName = docInstance.data["collegeName"];
-        _graduationYear = docInstance.data["graduationYear"];
-      });
-    });
-  }
+  // _getUserData() async {
+  //   userData =
+  //       Firestore.instance.collection("UserData").document(widget.username);
+  //   await userData.get().then((docInstance) {
+  //     setState(() {
+  //       _name = docInstance.data["name"];
+  //       _collegeName = docInstance.data["collegeName"];
+  //       _graduationYear = docInstance.data["graduationYear"];
+  //     });
+  //   });
+  // }
 
   @override
   void initState() {
-    _getUserData();
+    //_getUserData();
     super.initState();
   }
 
@@ -38,13 +43,13 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue, Colors.red],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   gradient: LinearGradient(
+        //     colors: [Colors.blue, Colors.red],
+        //     begin: Alignment.topLeft,
+        //     end: Alignment.bottomRight,
+        //   ),
+        // ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -84,10 +89,10 @@ class _ProfileState extends State<Profile> {
 
   _tableBuilder() {
     return [
-      _tableRowBuilder("Name", "$_name"),
+      _tableRowBuilder("Name", "${widget.name}"),
       _tableRowBuilder("Username", "${widget.username}"),
-      _tableRowBuilder("From", "$_collegeName"),
-      _tableRowBuilder("Batch of", "$_graduationYear"),
+      _tableRowBuilder("From", "${widget.collegeName}"),
+      _tableRowBuilder("Batch of", "${widget.graduationYear}"),
     ];
   }
 
@@ -108,7 +113,6 @@ class _ProfileState extends State<Profile> {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 16,
-          color: Colors.white,
         ),
       ),
       verticalAlignment: TableCellVerticalAlignment.middle,

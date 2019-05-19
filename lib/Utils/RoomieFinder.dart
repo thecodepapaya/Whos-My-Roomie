@@ -13,4 +13,8 @@ class RoomieFinder {
     _compatibility = 0;
     userdata = Firestore.instance.collection("UserData").document(_username);
   }
+
+  int roommateCompatibility() {
+    return 91;
+  }
 }

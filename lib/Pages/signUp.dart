@@ -556,6 +556,7 @@ class _SignUpState extends State<SignUp> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(40, 10, 40, 20),
                       child: TextFormField(
+                        textCapitalization: TextCapitalization.words,
                         controller: _collegeDetailsNameController,
                         inputFormatters: <TextInputFormatter>[
                           WhitelistingTextInputFormatter(
