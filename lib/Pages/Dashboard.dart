@@ -64,7 +64,7 @@ class _DashboardState extends State<Dashboard> {
     }).catchError((onError) {
       print("reached error in _fetchProfileDetails");
     });
-    print("Not connected to internet");
+    //print("Not connected to internet");
   }
 
   @override
@@ -158,7 +158,7 @@ class _DashboardState extends State<Dashboard> {
       stream: Firestore.instance
           .collection('UserData')
           .where("graduationYear", isEqualTo: _graduationYear)
-          //.where("filledForm", isEqualTo: "true")
+          .where("formfilled", isEqualTo: true)
           .orderBy("createdAt", descending: true)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {

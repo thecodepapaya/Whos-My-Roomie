@@ -58,7 +58,7 @@ class _ProfileState extends State<Profile> {
                 padding: EdgeInsets.fromLTRB(30, 50, 30, 20),
                 child: CircleAvatar(
                   child: Text(
-                    "${_name[0].toUpperCase()}",
+                    "${widget.name[0].toUpperCase()}",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w500,

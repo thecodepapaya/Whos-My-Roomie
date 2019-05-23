@@ -148,7 +148,7 @@ class _FillFormState extends State<FillForm> {
         textColor: Colors.black87,
       );
     } else {
-      database.setData({
+      database.updateData({
         "Your gender": gender.value,
         "Cleanliness Habits": cleanliness.value,
         "Sleeping habits": sleepingSchedule.value,
@@ -161,6 +161,7 @@ class _FillFormState extends State<FillForm> {
         "Social Behavious": socialBehaviour.value,
         "Noisy-ness": acousticProperties.value,
         "Movie Mania": tvWatcher.value,
+        "formfilled": true,
       });
       Fluttertoast.showToast(
         msg: "All fields submitted",
@@ -168,13 +169,13 @@ class _FillFormState extends State<FillForm> {
         backgroundColor: Colors.grey,
         textColor: Colors.black87,
       );
-      Navigator.pop(context);
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     MaterialPageRoute(
-      //       builder: (BuildContext context) =>
-      //           Dashboard(username: widget.username),
-      //     ),
-      //     (Route<dynamic> route) => false);
+      // Navigator.pop(context);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (BuildContext context) =>
+                Dashboard(username: widget.username),
+          ),
+          (Route<dynamic> route) => false);
     }
   }
 
