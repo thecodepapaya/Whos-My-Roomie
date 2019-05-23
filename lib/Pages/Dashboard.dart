@@ -1,5 +1,3 @@
-import 'dart:ui' as prefix0;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +9,7 @@ import 'dart:math';
 import 'package:whos_my_roomie/Pages/BugReport.dart' as mybugReport;
 import 'package:whos_my_roomie/Pages/Feedback.dart' as myFeedback;
 import 'package:whos_my_roomie/Pages/Profile.dart';
+import 'package:whos_my_roomie/Pages/fillForm.dart';
 import 'package:whos_my_roomie/Utils/RoomieFinder.dart';
 
 class Dashboard extends StatefulWidget {
@@ -29,11 +28,9 @@ class _DashboardState extends State<Dashboard> {
   bool darkMode = false;
   bool _internetConnectivity = false;
   SharedPreferences pref;
-  bool _filledForm = true; //make it false when carousel is built
+  bool _filledForm = false; //make it true  to debug carousel
 
-  var _profileName = "Name",
-      _collegeName = "College Name",
-      _graduationYear = "Year";
+  var _name = "Name", _collegeName = "College Name", _graduationYear = "Year";
 
   _getThemePrefs() async {
     pref = await SharedPreferences.getInstance();
@@ -54,18 +51,10 @@ class _DashboardState extends State<Dashboard> {
   }
 
   _fetchProfileDetails() async {
-    _checkInternetConnectivity();
-    documentInstance = await Firestore.instance
-        .collection("UserData")
-        .document(widget.username)
-        .get();
-
-    var _profileInstance =
-        Firestore.instance.collection("UserData").document(widget.username);
-    await _profileInstance.get().then((doc) {
+    await documentInstance.then((doc) {
       if (doc.exists) {
         setState(() {
-          _profileName = doc.data["name"];
+          _name = doc.data["name"];
           _collegeName = doc.data["collegeName"];
           _graduationYear = doc.data["graduationYear"];
         });
@@ -80,12 +69,17 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    documentInstance = Firestore.instance
+        .collection("UserData")
+        .document(widget.username)
+        .get();
+
     _getThemePrefs();
     _checkInternetConnectivity();
-    //_checkFilledForm(); // remove comment after carousal is built
-    _filledForm =
-        true; // for debugging puposes only. Rmeove when carousel is built
+    //_filledForm =
+    //    true; // for debugging puposes only. remove comment to check carousel
     _fetchProfileDetails();
+    _checkFilledForm(); // enable comment to check carousal
     roomie = RoomieFinder(widget.username);
     super.initState();
   }
@@ -114,7 +108,26 @@ class _DashboardState extends State<Dashboard> {
       child: _internetConnectivity
           ? (_filledForm)
               ? _carouselBuilder()
-              : Text("Please fill the form first")
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text("Please fill the form first"),
+                    ),
+                    MaterialButton(
+                      child: Text("Fill Form"),
+                      color: Colors.blue,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      onPressed: () {
+                        _showFormInfoDialog();
+                      },
+                    ),
+                  ],
+                )
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -174,17 +187,9 @@ class _DashboardState extends State<Dashboard> {
 
             return Container(
               height: double.infinity,
-              // decoration: BoxDecoration(
-              //   gradient: LinearGradient(
-              //     colors: [_randomColor(), _randomColor()],
-              //     begin: Alignment.topCenter,
-              //     end: Alignment.bottomCenter,
-              //   ),
-              // ),
               child: CarouselSlider(
                 height: 400, //MediaQuery.of(context).size.height * 3 / 4,
                 enlargeCenterPage: true,
-                //autoPlay: true,
                 viewportFraction: 0.8,
                 enableInfiniteScroll: false,
                 autoPlayCurve: Curves.easeIn,
@@ -194,17 +199,6 @@ class _DashboardState extends State<Dashboard> {
                       builder: (BuildContext context) {
                         //function to help build the table on carousel slider cards
                         _tableBuilder() {
-                          // return Table(
-
-                          //     children: [
-                          //       _tableRowBuilder("Name", "${doc['name']}"),
-                          //       _tableRowBuilder(
-                          //           "Username", "${doc['username']}"),
-                          //       _tableRowBuilder(
-                          //           "College", "${doc['collegeName']}"),
-                          //       _tableRowBuilder(
-                          //           "Batch of", "${doc['graduationYear']}")
-                          //     ]);
                           return [
                             _tableRowBuilder("Name", "${doc['name']}"),
                             _tableRowBuilder("Username", "${doc['username']}"),
@@ -262,27 +256,11 @@ class _DashboardState extends State<Dashboard> {
                                       ),
                                     ),
                                   ),
-                                  // Padding(
-                                  //   padding: EdgeInsets.all(20),
-                                  //   child: CircleAvatar(
-                                  //     child: Text(
-                                  //       doc["name"][0].toUpperCase(),
-                                  //       style: TextStyle(
-                                  //         fontSize: 25,
-                                  //         fontWeight: FontWeight.w500,
-                                  //       ),
-                                  //     ),
-                                  //     maxRadius: 30,
-                                  //   ),
-                                  // ),
                                   Padding(
                                     padding: EdgeInsets.all(15),
                                     child: SizedBox(
                                       width: 220,
                                       child: Table(
-                                        // defaultColumnWidth:
-                                        // IntrinsicColumnWidth(flex: 20),
-                                        // columnWidths: Map<1,TableColumnWidth()> columnWidth,
                                         children: _tableBuilder(),
                                         // border: TableBorder.all(
                                         //   color: Colors.purple,
@@ -302,26 +280,6 @@ class _DashboardState extends State<Dashboard> {
                                       ),
                                     ),
                                   ),
-                                  // Text(
-                                  //   doc["username"],
-                                  //   style: TextStyle(fontSize: 16.0),
-                                  //   textAlign: TextAlign.center,
-                                  // ),
-                                  // Text(
-                                  //   doc["name"],
-                                  //   style: TextStyle(fontSize: 16.0),
-                                  //   textAlign: TextAlign.center,
-                                  // ),
-                                  // Text(
-                                  //   doc["collegeName"],
-                                  //   style: TextStyle(fontSize: 16.0),
-                                  //   textAlign: TextAlign.center,
-                                  // ),
-                                  // Text(
-                                  //   doc["graduationYear"],
-                                  //   style: TextStyle(fontSize: 16.0),
-                                  //   textAlign: TextAlign.center,
-                                  // ),
                                 ],
                               ),
                             ),
@@ -349,7 +307,12 @@ class _DashboardState extends State<Dashboard> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) {
-                      return Profile(username: widget.username);
+                      return Profile(
+                        username: widget.username,
+                        name: _name, // a dirty code
+                        collegeName: _collegeName, // need to change this soon
+                        graduationYear: _graduationYear,
+                      );
                     },
                   ),
                 );
@@ -394,7 +357,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         SizedBox(
                           child: Text(
-                            _profileName,
+                            _name,
                             overflow: TextOverflow.ellipsis,
                           ),
                           width: MediaQuery.of(context).size.width * 3 / 5,
@@ -694,6 +657,35 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       verticalAlignment: TableCellVerticalAlignment.middle,
+    );
+  }
+
+  _showFormInfoDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(
+              "We will ask you a set of questions to determine the perfect match for you. Please try to answer as accurately as possible"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Get Started"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return FillForm(
+                      username: widget.username,
+                    );
+                  }),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
