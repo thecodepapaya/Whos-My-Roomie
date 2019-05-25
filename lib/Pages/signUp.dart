@@ -770,7 +770,7 @@ class _SignUpState extends State<SignUp> {
         'name': _nameController.text,
         'collegeName': _collegeDetailsNameController.text,
         'graduationYear': _collegeDetailsYearController.text,
-        'createdAt': DateTime.now().microsecondsSinceEpoch,
+        'createdAt': DateTime.now().toString(),
       }).then((_) {
         setState(() {
           _stackIndex++;

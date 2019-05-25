@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:whos_my_roomie/Utils/Person.dart';
 
 class RoomieFinder {
@@ -10,9 +11,9 @@ class RoomieFinder {
   Person user = Person();
   Person roomie = Person();
 
-  StreamController<int> streamListController = StreamController<int>();
+  StreamController<Text> streamListController = StreamController<Text>();
   Sink get compatibilitySink => streamListController.sink;
-  Stream<int> get compatibilityStream => streamListController.stream;
+  Stream<Text> get compatibilityStream => streamListController.stream;
 
   RoomieFinder(String username, String roomiename) {
     _compatibility = 0;
@@ -69,13 +70,19 @@ class RoomieFinder {
     compatibilitySink.add(roommateCompatibility());
   }
 
-  int roommateCompatibility() {
+  Text roommateCompatibility() {
     //_finalScore = _calculateFinalScore();
     _compatibility = ((1 - ((_finalScore) / 26)) * 100).toInt();
     // 26 is the maxiamum possible score one can get in the score test while the minimum is 0
     //  total score actually represents the total "imcompatibility" between the individuals
     // hence we subtract the _finalScore/26 from 1
-    return _compatibility;
+    return Text(
+      "Compatibility $_compatibility %",
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+      ),
+    );
   }
 
   int _calculateFinalScore() {

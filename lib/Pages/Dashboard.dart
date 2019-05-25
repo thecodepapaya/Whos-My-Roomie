@@ -227,9 +227,9 @@ class _DashboardState extends State<Dashboard> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) => Profile(
                                       username: doc["username"],
-                                      name: doc["name"],
-                                      collegeName: doc["collegeName"],
-                                      graduationYear: doc["graduationYear"],
+                                      // name: doc["name"],
+                                      // collegeName: doc["collegeName"],
+                                      // graduationYear: doc["graduationYear"],
                                     ),
                               ),
                             );
@@ -292,16 +292,16 @@ class _DashboardState extends State<Dashboard> {
                                     // ),
                                     child: StreamBuilder(
                                       stream: roomie.compatibilityStream,
-                                      initialData: 0,
+                                      initialData: Text(
+                                        "Loading...",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                       builder:
                                           (BuildContext context, snapshot) {
-                                        return Text(
-                                          "Compatibility: ${snapshot.data.toString()} %",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        );
+                                        return snapshot.data;
                                       },
                                     ),
                                   ),
@@ -321,11 +321,6 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  // _getCompatibility(var doc) async {
-  //   roomie = await RoomieFinder(widget.username, doc['username']);
-  //   _compatibility = roomie.roommateCompatibility().toString();
-  // }
-
   Widget _drawerBuilder() {
     return Drawer(
       child: ListView(
@@ -339,9 +334,9 @@ class _DashboardState extends State<Dashboard> {
                     builder: (BuildContext context) {
                       return Profile(
                         username: widget.username,
-                        name: _name, // a dirty code
-                        collegeName: _collegeName, // need to change this soon
-                        graduationYear: _graduationYear,
+                        // name: _name, // a dirty code
+                        // collegeName: _collegeName, // need to change this soon
+                        // graduationYear: _graduationYear,
                       );
                     },
                   ),
