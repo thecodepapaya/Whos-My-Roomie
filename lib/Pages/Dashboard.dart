@@ -23,6 +23,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   RoomieFinder roomie;
+  String _compatibility;
 
   var documentInstance;
   bool darkMode = false;
@@ -209,7 +210,7 @@ class _DashboardState extends State<Dashboard> {
                           ];
                         }
 
-                        roomie = RoomieFinder(widget.username, doc['username']);
+                        _getCompatibility(doc);
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -274,7 +275,7 @@ class _DashboardState extends State<Dashboard> {
                                   Padding(
                                     padding: EdgeInsets.all(30),
                                     child: Text(
-                                      "Compatibility: ${roomie.roommateCompatibility()} %",
+                                      "Compatibility: $_compatibility %",
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
@@ -295,6 +296,11 @@ class _DashboardState extends State<Dashboard> {
         }
       },
     );
+  }
+
+  _getCompatibility(var doc) async {
+    roomie = await RoomieFinder(widget.username, doc['username']);
+      _compatibility = roomie.roommateCompatibility().toString();
   }
 
   Widget _drawerBuilder() {

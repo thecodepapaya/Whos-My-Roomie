@@ -28,40 +28,81 @@ class Person {
   int acousticPropertiesScore;
   int tvWatcherScore;
 
-  int _totalScore;
+  Person() {
+    genderScore = -1;
+    cleanlinessScore = -1;
+    sleepingScheduleScore = -1;
+    cporcpiScore = -1;
+    gamerScore = -1;
+    studyHabitsScore = -1;
+    personalBelongingsScore = -1;
+    dietScore = -1;
+    bathingScore = -1;
+    socialBehaviourScore = -1;
+    acousticPropertiesScore = -1;
+    tvWatcherScore = -1;
 
-  int totalScore(Person roomie) {
-    _totalScore = (this.genderScore - roomie.genderScore).abs() +
-        (this.cleanlinessScore - roomie.cleanlinessScore).abs() +
-        (this.sleepingScheduleScore - roomie.sleepingScheduleScore).abs() +
-        (this.cporcpiScore - roomie.cporcpiScore).abs() +
-        (this.gamerScore - roomie.gamerScore).abs() +
-        (this.studyHabitsScore - roomie.studyHabitsScore).abs() +
-        (this.personalBelongingsScore - roomie.personalBelongingsScore).abs() +
-        (this.dietScore - roomie.dietScore).abs() +
-        (this.bathingScore - roomie.bathingScore).abs() +
-        (this.socialBehaviourScore - roomie.socialBehaviourScore).abs() +
-        (this.acousticPropertiesScore - roomie.acousticPropertiesScore).abs() +
-        (this.tvWatcherScore - roomie.tvWatcherScore).abs();
-    return _totalScore;
+    gender = "";
+    cleanliness = "";
+    sleepingSchedule = "";
+    cporcpi = "";
+    gamer = "";
+    studyHabits = "";
+    personalBelongings = "";
+    diet = "";
+    bathing = "";
+    socialBehaviour = "";
+    acousticProperties = "";
+    tvWatcher = "";
   }
+
+  // int _totalScore;
+
+  // int totalScore(Person roomie) {
+  //   _totalScore = (this.genderScore - roomie.genderScore).abs() +
+  //       (this.cleanlinessScore - roomie.cleanlinessScore).abs() +
+  //       (this.sleepingScheduleScore - roomie.sleepingScheduleScore).abs() +
+  //       (this.cporcpiScore - roomie.cporcpiScore).abs() +
+  //       (this.gamerScore - roomie.gamerScore).abs() +
+  //       (this.studyHabitsScore - roomie.studyHabitsScore).abs() +
+  //       (this.personalBelongingsScore - roomie.personalBelongingsScore).abs() +
+  //       (this.dietScore - roomie.dietScore).abs() +
+  //       (this.bathingScore - roomie.bathingScore).abs() +
+  //       (this.socialBehaviourScore - roomie.socialBehaviourScore).abs() +
+  //       (this.acousticPropertiesScore - roomie.acousticPropertiesScore).abs() +
+  //       (this.tvWatcherScore - roomie.tvWatcherScore).abs();
+  //   return _totalScore;
+  // }
 
   void giveScore() {
-    giveGenderScore();
-    giveCleanlinessScore();
-    giveSleepingScheduleScore();
-    giveCporcpiScore();
-    giveGamerScore();
-    giveStudyHabitsScore();
-    givePersonalBelongingsScore();
-    giveDietScore();
-    giveBathingScore();
-    giveSocialBehaviourScore();
-    giveAcousticPropertiesScore();
-    giveTvWatcherScore();
+    _giveGenderScore();
+    _giveCleanlinessScore();
+    _giveSleepingScheduleScore();
+    _giveCporcpiScore();
+    _giveGamerScore();
+    _giveStudyHabitsScore();
+    _givePersonalBelongingsScore();
+    _giveDietScore();
+    _giveBathingScore();
+    _giveSocialBehaviourScore();
+    _giveAcousticPropertiesScore();
+    _giveTvWatcherScore();
+
+    print("genderScore: $genderScore");
+    print("cleanlinessScore: $cleanlinessScore");
+    print("sleepingScheduleScore: $sleepingScheduleScore");
+    print("cporcpiScore: $cporcpiScore");
+    print("GamerScore: $gamerScore");
+    print("studyHabitsScore: $studyHabitsScore");
+    print("personalBelongingsScore: $personalBelongingsScore");
+    print("dietScore: $dietScore");
+    print("bathingScore: $bathingScore");
+    print("socialBehaviourScore: $socialBehaviourScore");
+    print("acousticPropertiesScore: $acousticPropertiesScore");
+    print("tvWatcherScore: $tvWatcherScore");
   }
 
-  void giveGenderScore() {
+  void _giveGenderScore() {
     switch (gender) {
       case "Female":
         genderScore = 0;
@@ -75,7 +116,7 @@ class Person {
     }
   }
 
-  void giveCleanlinessScore() {
+  void _giveCleanlinessScore() {
     switch (cleanliness) {
       case "I cannot tolerate anything out of perfect order in my room":
         cleanlinessScore = 0;
@@ -89,7 +130,7 @@ class Person {
     }
   }
 
-  void giveSleepingScheduleScore() {
+  void _giveSleepingScheduleScore() {
     switch (sleepingSchedule) {
       case "I basically sleep through the whole day":
         sleepingScheduleScore = 0;
@@ -109,7 +150,7 @@ class Person {
     }
   }
 
-  void giveCporcpiScore() {
+  void _giveCporcpiScore() {
     switch (cporcpi) {
       case "I want a good CPI at the end of 4 years":
         cporcpiScore = 0;
@@ -120,7 +161,7 @@ class Person {
     }
   }
 
-  void giveGamerScore() {
+  void _giveGamerScore() {
     switch (gamer) {
       case "I can play games all day long if I got the chance":
         gamerScore = 0;
@@ -134,7 +175,7 @@ class Person {
     }
   }
 
-  void giveStudyHabitsScore() {
+  void _giveStudyHabitsScore() {
     switch (studyHabits) {
       case "I study regularly all the time":
         studyHabitsScore = 0;
@@ -151,7 +192,7 @@ class Person {
     }
   }
 
-  void givePersonalBelongingsScore() {
+  void _givePersonalBelongingsScore() {
     switch (personalBelongings) {
       case "I cannot tolerate anybody using my belongings without my permission":
         personalBelongingsScore = 0;
@@ -165,7 +206,7 @@ class Person {
     }
   }
 
-  void giveDietScore() {
+  void _giveDietScore() {
     switch (diet) {
       case "I'm a vegan / I cannot tolerate any non vegetarian food in my room":
         dietScore = 0;
@@ -179,7 +220,7 @@ class Person {
     }
   }
 
-  void giveBathingScore() {
+  void _giveBathingScore() {
     switch (bathing) {
       case "I cannot live peacefully without bathing twice a day":
         bathingScore = 0;
@@ -193,7 +234,7 @@ class Person {
     }
   }
 
-  void giveSocialBehaviourScore() {
+  void _giveSocialBehaviourScore() {
     switch (socialBehaviour) {
       case "I like to spend my day alone in my room without disturbances":
         socialBehaviourScore = 0;
@@ -207,7 +248,7 @@ class Person {
     }
   }
 
-  void giveAcousticPropertiesScore() {
+  void _giveAcousticPropertiesScore() {
     switch (acousticProperties) {
       case "I like to play music and media on high volume always":
         acousticPropertiesScore = 0;
@@ -221,7 +262,7 @@ class Person {
     }
   }
 
-  void giveTvWatcherScore() {
+  void _giveTvWatcherScore() {
     switch (tvWatcher) {
       case "I've finished watching GOT, F.R.I.E.N.D.S, Bib Bang theory and a dozen other animes":
         tvWatcherScore = 0;

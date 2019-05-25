@@ -3,7 +3,7 @@ import 'package:whos_my_roomie/Utils/Person.dart';
 
 class RoomieFinder {
   String _username, _roomiename; //, _name, _graduationYear, _collegeName;
-  int _compatibility, _finalScore;
+  int _compatibility, _finalScore = 0;
   DocumentReference userdata, roomiedata;
   Person user = Person();
   Person roomie = Person();
@@ -33,6 +33,8 @@ class RoomieFinder {
       user.acousticProperties = doc['Noisy-ness'];
       user.tvWatcher = doc['Movie Mania'];
       print("Received user details");
+    }).then((_) {
+      user.giveScore();
     });
     await roomiedata.get().then((DocumentSnapshot doc) {
       user.gender = doc['Your gender'];
@@ -48,22 +50,44 @@ class RoomieFinder {
       roomie.acousticProperties = doc['Noisy-ness'];
       roomie.tvWatcher = doc['Movie Mania'];
       print("Received roomie details");
+    }).then((_) {
+      roomie.giveScore();
+      _calculateFinalScore();
     });
     // user.giveScore();
     // roomie.giveScore();
   }
 
+  int roommateCompatibility() {
+    //_finalScore = _calculateFinalScore();
+    _compatibility = ((1 - ((_finalScore) / 26)) * 100).toInt();
+    // 26 is the maxiamum possible score one can get in the score test while the minimum is 0
+    //  total score actually represents the total "imcompatibility" between the individuals
+    // hence we subtract the _finalScore/26 from 1
+    return _compatibility;
+  }
+
   int _calculateFinalScore() {
-    user.giveScore();
-    roomie.giveScore();
-    int difference = (user.totalScore(roomie));
+    // user.giveScore();_
+    // roomie.giveScore();
+    int difference = totalScore(user, roomie);
+    print("Total Score: $difference");
     return difference;
   }
 
-  int roommateCompatibility() {
-    _finalScore = _calculateFinalScore();
-    _compatibility = (1 - ((_finalScore) / 26) * 100).toInt();
-    //26 is the maxiamum possible score one can get in the score test while the minimum is 0
-    return _compatibility;
+  int totalScore(Person user, Person roomie) {
+    int _totalScore = (user.genderScore - roomie.genderScore).abs() +
+        (user.cleanlinessScore - roomie.cleanlinessScore).abs() +
+        (user.sleepingScheduleScore - roomie.sleepingScheduleScore).abs() +
+        (user.cporcpiScore - roomie.cporcpiScore).abs() +
+        (user.gamerScore - roomie.gamerScore).abs() +
+        (user.studyHabitsScore - roomie.studyHabitsScore).abs() +
+        (user.personalBelongingsScore - roomie.personalBelongingsScore).abs() +
+        (user.dietScore - roomie.dietScore).abs() +
+        (user.bathingScore - roomie.bathingScore).abs() +
+        (user.socialBehaviourScore - roomie.socialBehaviourScore).abs() +
+        (user.acousticPropertiesScore - roomie.acousticPropertiesScore).abs() +
+        (user.tvWatcherScore - roomie.tvWatcherScore).abs();
+    return _totalScore;
   }
 }
