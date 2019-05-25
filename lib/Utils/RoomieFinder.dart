@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whos_my_roomie/Utils/Person.dart';
 
@@ -7,6 +9,10 @@ class RoomieFinder {
   DocumentReference userdata, roomiedata;
   Person user = Person();
   Person roomie = Person();
+
+  StreamController<int> streamListController = StreamController<int>();
+  Sink get compatibilitySink => streamListController.sink;
+  Stream<int> get compatibilityStream => streamListController.stream;
 
   RoomieFinder(String username, String roomiename) {
     _compatibility = 0;
@@ -52,10 +58,15 @@ class RoomieFinder {
       print("Received roomie details");
     }).then((_) {
       roomie.giveScore();
-      _calculateFinalScore();
+      _finalScore = _calculateFinalScore();
+      putToStream();
     });
     // user.giveScore();
     // roomie.giveScore();
+  }
+
+  putToStream() {
+    compatibilitySink.add(roommateCompatibility());
   }
 
   int roommateCompatibility() {

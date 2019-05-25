@@ -23,15 +23,17 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   RoomieFinder roomie;
-  String _compatibility;
+
+  //String _compatibility;
 
   var documentInstance;
   bool darkMode = false;
   bool _internetConnectivity = false;
   SharedPreferences pref;
   bool _filledForm = false; //make it true  to debug carousel
-
-  var _name = "Name", _collegeName = "College Name", _graduationYear = "Year";
+  var _name = "Name";
+  var _collegeName = "College Name";
+  var _graduationYear = "Year";
 
   _getThemePrefs() async {
     pref = await SharedPreferences.getInstance();
@@ -81,8 +83,14 @@ class _DashboardState extends State<Dashboard> {
     //    true; // for debugging puposes only. remove comment to check carousel
     _fetchProfileDetails();
     _checkFilledForm(); // enable comment to check carousal
-    //roomie = RoomieFinder(widget.username);
+    // roomie = RoomieFinder(widget.username);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    roomie.streamListController.close();
+    super.dispose();
   }
 
   @override
@@ -210,7 +218,8 @@ class _DashboardState extends State<Dashboard> {
                           ];
                         }
 
-                        _getCompatibility(doc);
+                        roomie = RoomieFinder(widget.username, doc['username']);
+                        //_getCompatibility(doc);
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -274,12 +283,26 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.all(30),
-                                    child: Text(
-                                      "Compatibility: $_compatibility %",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                    // child: Text(
+                                    //   "Compatibility: $_compatibility %",
+                                    //   style: TextStyle(
+                                    //     fontSize: 20,
+                                    //     fontWeight: FontWeight.w500,
+                                    //   ),
+                                    // ),
+                                    child: StreamBuilder(
+                                      stream: roomie.compatibilityStream,
+                                      initialData: 0,
+                                      builder:
+                                          (BuildContext context, snapshot) {
+                                        return Text(
+                                          "Compatibility: ${snapshot.data.toString()} %",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -298,10 +321,10 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  _getCompatibility(var doc) async {
-    roomie = await RoomieFinder(widget.username, doc['username']);
-      _compatibility = roomie.roommateCompatibility().toString();
-  }
+  // _getCompatibility(var doc) async {
+  //   roomie = await RoomieFinder(widget.username, doc['username']);
+  //   _compatibility = roomie.roommateCompatibility().toString();
+  // }
 
   Widget _drawerBuilder() {
     return Drawer(
