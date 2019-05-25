@@ -240,9 +240,9 @@ class _FillFormState extends State<FillForm> {
         ),
       ),
       DropdownMenuItem(
-        value: "I follow the 'early to bed and early to rise formula'",
+        value: "I follow the 'early to bed and early to rise' formula",
         child: Text(
-          "I follow the 'early to bed and early to rise formula'",
+          "I follow the 'early to bed and early to rise' formula",
           maxLines: 4,
           softWrap: true,
         ),
@@ -266,9 +266,9 @@ List<DropdownMenuItem<String>> cpOrCpiOptions() {
       ),
     ),
     DropdownMenuItem(
-      value: "I want to be good at Competetive programming",
+      value: "I want to be good at Competitive programming",
       child: Text(
-        "I want to be good at Competetive programming",
+        "I want to be good at Competitive programming",
       ),
     ),
   ];
@@ -456,9 +456,9 @@ List<DropdownMenuItem<String>> tvWatcherOptions() {
       ),
     ),
     DropdownMenuItem(
-      value: "I watch TV series and / or animes in my free time",
+      value: "I watch TV series and / or animes only in my free time",
       child: Text(
-        "I watch TV series and / or animes in my free time",
+        "I watch TV series and / or animes only in my free time",
       ),
     ),
     DropdownMenuItem(

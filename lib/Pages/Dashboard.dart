@@ -80,7 +80,7 @@ class _DashboardState extends State<Dashboard> {
     //    true; // for debugging puposes only. remove comment to check carousel
     _fetchProfileDetails();
     _checkFilledForm(); // enable comment to check carousal
-    roomie = RoomieFinder(widget.username);
+    //roomie = RoomieFinder(widget.username);
     super.initState();
   }
 
@@ -209,6 +209,7 @@ class _DashboardState extends State<Dashboard> {
                           ];
                         }
 
+                        roomie = RoomieFinder(widget.username, doc['username']);
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
